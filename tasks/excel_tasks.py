@@ -3,7 +3,7 @@ from robocorp.tasks import task
 from RPA.Browser.Selenium import Selenium
 
 @task
-def open_browser():
+def excel():
     log.info("Excel task started.")
     lib = Selenium()
     lib.open_available_browser("https://apple.com")
