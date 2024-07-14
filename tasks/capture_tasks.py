@@ -16,5 +16,8 @@ def capture():
     lib.open_available_browser("https://google.com")
     for item in workitems.inputs:
         print(item)
-        workitems.outputs.create(item)
+        payload = {
+            "Name":"Name"
+        }
+        workitems.outputs.create(payload)
 
