@@ -97,7 +97,15 @@ class BaseNewsSource(ABC):
             self.browser.input_text_when_element_is_visible(self.locators['search_bar'],self.search_term)
             log.info("Search term input.")
         except AssertionError:
-            raise ElementNotFound("Search term could not be input.")
+            raise ElementNotFound("Search term could not be inserted.")
+        
+        try:
+            self.browser.click_element_when_clickable(self.locators['search_button'],self.DEFAULT_TIMEOUT)
+        except AssertionError:
+            raise ElementNotFound("Search button could not be found or never became clickable.")
+    
+
             
+
     def close(self):
         self.browser.close_browser()

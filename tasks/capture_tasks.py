@@ -5,6 +5,7 @@ from sources.source_factory import get_news_source
 from RPA.Browser.Selenium import Selenium,ElementNotFound
 from . import setup_log
 from .util import check_connection,check_work_item
+import time
 
 @task
 def capture():
@@ -17,9 +18,11 @@ def capture():
     for item in workitems.inputs: 
         check_work_item(item)
         news_source = get_news_source(item.payload)
-        #news_source.run()
+        news_source.run()
+        time.sleep(15)
 
 #Improvements
 #check max nr of months
 # keep execution of next work item in queue even if an error is thrown
 # check if month should be considered whole
+#fallbacks

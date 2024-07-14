@@ -1,6 +1,7 @@
 from .base_news_source import BaseNewsSource
 from datetime import datetime
 
+
 class GoogleNewsSource(BaseNewsSource):
 
     def __init__(self,payload):
@@ -26,11 +27,12 @@ class GoogleNewsSource(BaseNewsSource):
 
         delta = datetime.today() - self.start_date
         date_filter = f" when:{delta.days}d"
-        self.search_term = self.search_term + date_filter
+        self.search_term = '"' + self.search_term + '"' + date_filter
 
 
     def run(self):
         self.load_website()
+        self.update_date_range()
         self.input_search_term()
-
+        self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=60)
         self.close()

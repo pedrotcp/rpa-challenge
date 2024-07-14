@@ -3,16 +3,8 @@
       "payload": {
          "search_term": "automation",
          "category": "Business",
-         "months":"0",
+         "months":"2",
          "news_source": "google_news"
       }
-  },
-  {
-    "payload": {
-      "search_term": "automation",
-      "category": "Business",
-       "news_source": "reuters",
-       "months": "12"
-    }
   }
 ]
