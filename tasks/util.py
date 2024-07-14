@@ -1,20 +1,19 @@
 import socket
 from robocorp import log
 
-def check_work_items(workitems):
+def check_work_item(item):
     """
         Checks if payload is available and all the required parameters are present inside it
     """
 
     required_keys = ['search_term','category','months']
     
-    for item in workitems.inputs:
-        if not item.payload:
-            raise ValueError("Work Items payload not available.")
+    if not item.payload:
+        raise ValueError("Work Items payload not available.")
 
-        for key in required_keys:
-            if key not in item.payload:
-                raise ValueError(f"Input Work Item is missing key: '{key}'")
+    for key in required_keys:
+        if key not in item.payload:
+            raise ValueError(f"Input Work Item is missing key: '{key}'")
     
     log.info("Work Item payloads checked.")
 
