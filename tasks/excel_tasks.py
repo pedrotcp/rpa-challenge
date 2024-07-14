@@ -10,6 +10,9 @@ def excel():
     lib = Selenium()
     lib.open_available_browser("https://apple.com")
     for item in workitems.inputs:
-        print(item)
-        workitems.outputs.create(item)
+        log.info(item)
+        payload = {
+            "Name":"Name"
+        }
+        workitems.outputs.create(payload)
 

@@ -15,7 +15,7 @@ def capture():
     lib = Selenium()
     lib.open_available_browser("https://google.com")
     for item in workitems.inputs:
-        print(item)
+        log.info(item)
         payload = {
             "Name":"Name"
         }

@@ -9,4 +9,6 @@ def images():
     log.info("Images task started.")
     lib = Selenium()
     lib.open_available_browser("https://microsoft.com")
+    for item in workitems.inputs:
+        log.info(item)
 
