@@ -2,11 +2,12 @@ from abc import ABC, abstractmethod
 from RPA.Browser.Selenium import Selenium, ElementNotFound
 from robocorp import log
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 class BaseNewsSource(ABC):
 
-    LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'search_results']
+    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'search_results']
     DEFAULT_TIMEOUT = 10
     
     def __init__(self,name,url,locators,payload):
@@ -19,11 +20,12 @@ class BaseNewsSource(ABC):
         self.search_term = payload['search_term']
         self.category = payload['category']
         self.months = payload['months']
+        self.start_date = self.get_cut_date(self.months)
         self.locators = locators
         self._check_locators()
 
     def _check_locators(self):
-        for locator in self.LOCATORS:
+        for locator in self.BASE_LOCATORS:
             if locator not in self.locators:
                 raise ValueError(f"Locator missing: {locator}")
 
@@ -37,7 +39,32 @@ class BaseNewsSource(ABC):
         """
         pass
     
-    def calculate_start_date()
+    def get_cut_date(self,months,whole_month=True):
+        #Calculates the first day of the Nth month back. 
+        # I'm assuming past months before current one should be considered whole. 
+        # If not, call this method parameter 'whole_month' as False.
+        # Might be a good idea to also check the max number of months, otherwise 
+        # the tasks might take too long to complete for large values. Assuming max = 12.
+
+        try:
+            months_int = int(months)
+        except:
+            raise ValueError("Months parameter should be a valid integer.")
+        
+        if months_int < 0 or months_int > 12:
+            raise ValueError("Months parameter must be greater than or equals 0 and less than or equals 12.")
+
+        if months_int < 1:
+            months_int = 1
+
+        start_day = datetime.today() - relativedelta(months=months_int-1)
+        
+        if whole_month:
+            start_day = start_day.replace(day=1)
+
+        log.info(f"Start date for current iteration ({months_int} months): {start_day}")
+
+        return start_day
 
     def load_website(self):
         try:
