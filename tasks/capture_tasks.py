@@ -25,4 +25,6 @@ def capture():
 #check max nr of months
 # keep execution of next work item in queue even if an error is thrown
 # check if month should be considered whole
-#fallbacks
+# fallbacks
+# Validate robot captcha
+# add generic errors to assertions

@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 class BaseNewsSource(ABC):
 
-    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'search_results']
+    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'category_container']
     DEFAULT_TIMEOUT = 10
     
     def __init__(self,name,url,locators,payload):
@@ -104,8 +104,16 @@ class BaseNewsSource(ABC):
         except AssertionError:
             raise ElementNotFound("Search button could not be found or never became clickable.")
     
+    def filter_category(self):
+        #too specific to have a base method.
+        raise NotImplementedError("Not Implemented. Create a custom filter method.")
 
-            
+    def parse_results(self):
+        
+        try:
+            self.browser.page_should_contain
+        except:
+            pass
 
     def close(self):
         self.browser.close_browser()

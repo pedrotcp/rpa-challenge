@@ -1,4 +1,5 @@
 from .base_news_source import BaseNewsSource
+from robocorp import log
 from datetime import datetime
 
 
@@ -12,7 +13,8 @@ class GoogleNewsSource(BaseNewsSource):
             'search_bar_activator':None,
             'search_bar': '//*[@class="Ax4B8 ZAGvjd"]',
             'search_button': '//*[@class="gb_ve"]',
-            'search_results': "//*[@class='search-results']"
+            'search_results': "//*[@class='search-results']",
+            'category_container': '//a[@class="brSCsc" and text()="{category_placehoder}"]'
         }
 
         super().__init__(name,url,locators,payload)
@@ -29,10 +31,20 @@ class GoogleNewsSource(BaseNewsSource):
         date_filter = f" when:{delta.days}d"
         self.search_term = '"' + self.search_term + '"' + date_filter
 
+    def filter_category(self):
+        log.info("This news source does not allow filtering by category")
+        # self.locators['category_container'] = self.locators['category_container'].replace("{category_placehoder}",self.category)
+
+        # try:
+        #     self.browser.click_element_when_clickable(self.locators['category_container'])
+        # except AssertionError:
+        #     raise AssertionError(f"Could not set category '{self.category}' on results page.")
+
 
     def run(self):
         self.load_website()
         self.update_date_range()
         self.input_search_term()
+        self.filter_category()
         self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=60)
         self.close()
