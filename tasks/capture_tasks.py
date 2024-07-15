@@ -19,7 +19,6 @@ def capture():
         check_work_item(item)
         news_source = get_news_source(item.payload)
         news_source.run()
-        time.sleep(15)
 
 #Improvements
 #check max nr of months
@@ -28,3 +27,4 @@ def capture():
 # fallbacks
 # Validate robot captcha
 # add generic errors to assertions
+# replace the use of aria label when locating spinner because of language

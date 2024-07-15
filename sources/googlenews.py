@@ -13,8 +13,9 @@ class GoogleNewsSource(BaseNewsSource):
             'search_bar_activator':None,
             'search_bar': '//*[@class="Ax4B8 ZAGvjd"]',
             'search_button': '//*[@class="gb_ve"]',
-            'search_results': "//*[@class='search-results']",
-            'category_container': '//a[@class="brSCsc" and text()="{category_placehoder}"]'
+            'category_container': '//a[@class="brSCsc" and text()="{category_placehoder}"]',
+            'search_results': '//article[@class="IFHyqb DeXSAc"]',
+            'loading_element':  '//*[@jsname="LbNpof" and @role="progressbar"]',
         }
 
         super().__init__(name,url,locators,payload)
@@ -40,11 +41,13 @@ class GoogleNewsSource(BaseNewsSource):
         # except AssertionError:
         #     raise AssertionError(f"Could not set category '{self.category}' on results page.")
 
-
     def run(self):
         self.load_website()
         self.update_date_range()
         self.input_search_term()
         self.filter_category()
-        self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=60)
+        self.scroll(mode="loading_element")
+
+        log.info("Waiting")
+        self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=15)
         self.close()

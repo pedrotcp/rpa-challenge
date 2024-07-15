@@ -3,11 +3,12 @@ from RPA.Browser.Selenium import Selenium, ElementNotFound
 from robocorp import log
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import time
 
 
 class BaseNewsSource(ABC):
 
-    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'category_container']
+    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'category_container','search_results','loading_element']
     DEFAULT_TIMEOUT = 10
     
     def __init__(self,name,url,locators,payload):
@@ -23,6 +24,10 @@ class BaseNewsSource(ABC):
         self.start_date = self.get_cut_date(self.months)
         self.locators = locators
         self._check_locators()
+
+        self.browser.set_selenium_speed(1)
+        self.browser.set_selenium_page_load_timeout(15)
+
 
     def _check_locators(self):
         for locator in self.BASE_LOCATORS:
@@ -95,7 +100,7 @@ class BaseNewsSource(ABC):
         
         try:
             self.browser.input_text_when_element_is_visible(self.locators['search_bar'],self.search_term)
-            log.info("Search term input.")
+            log.info("Search term inserted.")
         except AssertionError:
             raise ElementNotFound("Search term could not be inserted.")
         
@@ -103,11 +108,42 @@ class BaseNewsSource(ABC):
             self.browser.click_element_when_clickable(self.locators['search_button'],self.DEFAULT_TIMEOUT)
         except AssertionError:
             raise ElementNotFound("Search button could not be found or never became clickable.")
-    
-    def filter_category(self):
-        #too specific to have a base method.
-        raise NotImplementedError("Not Implemented. Create a custom filter method.")
+        
+        try:
+            self.browser.wait_until_page_contains_element(self.locators['search_results'],self.DEFAULT_TIMEOUT)
+            log.info("Results page loaded.")
+        except AssertionError:
+            raise ElementNotFound("Timed out while waiting for results page.")
 
+    @abstractmethod 
+    def filter_category(self):
+        # Too specific to have a base method.
+        pass
+    
+    def scroll(self,mode="end_element"):
+        # Method to handle result pages with infinite scrolling, where 
+        # the results are all store on the same page. Has 2 modes:
+
+        # - "end_element" = Assumes no more results are availabe when an end 
+        # of list element exists and is visible, like a div with a message "no more results".
+        # 
+        # - "loading_element" = Assumes no more results are available when a loading visual cue
+        #   no longer appears upon scrolling to the bottom, like those spinner thingies.
+        
+        if mode == "loading_element":
+            try:
+                while True:
+                    self.browser.execute_javascript("window.scrollBy(0, 5000);")
+                    
+                    self.browser.wait_until_element_is_visible(self.locators['loading_element'],timeout=10)
+                    self.browser.wait_until_element_is_not_visible(self.locators['loading_element'],timeout=10)
+                #last = self.browser.find_elements(self.locators['search_results'])[-1]
+            except Exception as e:
+                print(e)
+
+        else:
+            raise NotImplementedError("Scroll mode not implemented.")
+        
     def parse_results(self):
         
         try:
@@ -117,3 +153,4 @@ class BaseNewsSource(ABC):
 
     def close(self):
         self.browser.close_browser()
+
