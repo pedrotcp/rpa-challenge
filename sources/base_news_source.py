@@ -8,31 +8,37 @@ import time
 
 class BaseNewsSource(ABC):
 
-    BASE_LOCATORS = ['search_bar_activator','search_bar', 'search_button', 'category_container','search_results','loading_element']
-    DEFAULT_TIMEOUT = 10
-    
-    def __init__(self,name,url,locators,payload):
+    def __init__(self,name,url,locators,payload,headless=True):
 
         log.info(f"Instantiating news source {name}")
-
+        
+        self.base_locators = ['search_bar_activator',
+                              'search_bar', 
+                              'search_button', 
+                              'category_container',
+                              'news_element',
+                              'loading_element',
+                              'title',
+                              'description',
+                              'date',
+                              'picture_url']
+        self.default_timeout = 10
         self.browser = Selenium()
+        self.headless = headless
         self.name = name
         self.url = url
+        self.locators = locators
         self.search_term = payload['search_term']
         self.category = payload['category']
         self.months = payload['months']
         self.start_date = self.get_cut_date(self.months)
-        self.locators = locators
-        self._check_locators()
+        self.news_element_list = list()
+        self.news_parsed_dict = []
 
+        self.check_locators()
         self.browser.set_selenium_speed(1)
         self.browser.set_selenium_page_load_timeout(15)
 
-
-    def _check_locators(self):
-        for locator in self.BASE_LOCATORS:
-            if locator not in self.locators:
-                raise ValueError(f"Locator missing: {locator}")
 
     @abstractmethod
     def run(self):
@@ -44,6 +50,11 @@ class BaseNewsSource(ABC):
         """
         pass
     
+    def check_locators(self):
+        for locator in self.base_locators:
+            if locator not in self.locators:
+                raise ValueError(f"Locator missing: {locator}")
+
     def get_cut_date(self,months,whole_month=True):
         #Calculates the first day of the Nth month back. 
         # I'm assuming past months before current one should be considered whole. 
@@ -73,14 +84,14 @@ class BaseNewsSource(ABC):
 
     def load_website(self):
         try:
-            self.browser.open_available_browser(self.url)
+            self.browser.open_available_browser(self.url,headless=self.headless)
             log.info("Page loaded")
         except Exception as e:
             log.critical(f"Error navigating to url: {e}")
 
     def activate_search_bar(self):
         try:
-            self.browser.wait_until_page_contains_element(self.locators['search_bar_activator'], timeout=self.DEFAULT_TIMEOUT)
+            self.browser.wait_until_page_contains_element(self.locators['search_bar_activator'], timeout=self.default_timeout)
             log.info("Locator search_bar_activator exists.")
         except AssertionError:
             raise ElementNotFound("Locator search_bar_activator could not be found.")
@@ -93,7 +104,7 @@ class BaseNewsSource(ABC):
     def input_search_term(self):
 
         try:
-            self.browser.wait_until_page_contains_element(self.locators['search_bar'], timeout=self.DEFAULT_TIMEOUT)
+            self.browser.wait_until_page_contains_element(self.locators['search_bar'], timeout=self.default_timeout)
             log.info("Locator search_bar exists.")
         except AssertionError:
             raise ElementNotFound("Locator search_bar could not be found.")
@@ -105,19 +116,19 @@ class BaseNewsSource(ABC):
             raise ElementNotFound("Search term could not be inserted.")
         
         try:
-            self.browser.click_element_when_clickable(self.locators['search_button'],self.DEFAULT_TIMEOUT)
+            self.browser.click_element_when_clickable(self.locators['search_button'],self.default_timeout)
         except AssertionError:
             raise ElementNotFound("Search button could not be found or never became clickable.")
         
         try:
-            self.browser.wait_until_page_contains_element(self.locators['search_results'],self.DEFAULT_TIMEOUT)
+            self.browser.wait_until_page_contains_element(self.locators['news_element'],self.default_timeout)
             log.info("Results page loaded.")
         except AssertionError:
             raise ElementNotFound("Timed out while waiting for results page.")
 
     @abstractmethod 
     def filter_category(self):
-        # Too specific to have a base method.
+        # Too specific among different news sites to have a base method.
         pass
     
     def scroll(self,mode="end_element"):
@@ -134,22 +145,27 @@ class BaseNewsSource(ABC):
             try:
                 while True:
                     self.browser.execute_javascript("window.scrollBy(0, 5000);")
-                    
-                    self.browser.wait_until_element_is_visible(self.locators['loading_element'],timeout=10)
-                    self.browser.wait_until_element_is_not_visible(self.locators['loading_element'],timeout=10)
-                #last = self.browser.find_elements(self.locators['search_results'])[-1]
+                    self.browser.wait_until_element_is_visible(self.locators['loading_element'],timeout=5)
+                    self.browser.wait_until_element_is_not_visible(self.locators['loading_element'],timeout=5)
             except Exception as e:
-                print(e)
-
+                log.info(f"Finished scrolling with the following exception: {e} ")
+            
         else:
             raise NotImplementedError("Scroll mode not implemented.")
-        
-    def parse_results(self):
-        
+    
+    def capture_news(self):
         try:
-            self.browser.page_should_contain
-        except:
-            pass
+            # Captures all news elements
+            self.news_element_list = self.browser.find_elements(self.locators['news_element'])
+            print(len(self.news_element_list))
+        except ElementNotFound as e:
+            log.warn(f"No news container elements were found: {e}")
+        except Exception as e:
+            log.critical(f"The following exception was found when trying to capture the news list: {e}")
+    
+    @abstractmethod
+    def parse_results(self):
+        pass
 
     def close(self):
         self.browser.close_browser()

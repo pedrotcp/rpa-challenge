@@ -17,7 +17,7 @@ def capture():
     #This loop can run only once, because after an item is reserved and released, it cannot be accessed anymore? (Check docs) 
     for item in workitems.inputs: 
         check_work_item(item)
-        news_source = get_news_source(item.payload)
+        news_source = get_news_source(item.payload,headless=True)
         news_source.run()
 
 #Improvements
@@ -28,3 +28,4 @@ def capture():
 # Validate robot captcha
 # add generic errors to assertions
 # replace the use of aria label when locating spinner because of language
+# ask the user if they want the link to the news
