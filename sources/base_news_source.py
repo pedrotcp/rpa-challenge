@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from RPA.Browser.Selenium import Selenium, ElementNotFound
 from robocorp import log
-from datetime import datetime, timedelta
+from datetime import datetime,timezone
 from dateutil.relativedelta import relativedelta
-import time
+import os
+import mimetypes
+import urllib.request
 
 
 class BaseNewsSource(ABC):
@@ -21,7 +23,8 @@ class BaseNewsSource(ABC):
                               'title',
                               'description',
                               'date',
-                              'picture_url']
+                              'picture_url',
+                              'modal_dismiss']
         self.default_timeout = 10
         self.browser = Selenium()
         self.headless = headless
@@ -36,7 +39,7 @@ class BaseNewsSource(ABC):
         self.news_parsed_dict = []
 
         self.check_locators()
-        self.browser.set_selenium_speed(1)
+        self.browser.set_selenium_speed(2)
         self.browser.set_selenium_page_load_timeout(15)
 
 
@@ -80,12 +83,13 @@ class BaseNewsSource(ABC):
 
         log.info(f"Start date for current iteration ({months_int} months): {start_day}")
 
-        return start_day
+        return start_day.replace(tzinfo=timezone.utc)
 
     def load_website(self):
         try:
             self.browser.open_available_browser(self.url,headless=self.headless)
             log.info("Page loaded")
+            self.dismiss_modal()
         except Exception as e:
             log.critical(f"Error navigating to url: {e}")
 
@@ -95,6 +99,8 @@ class BaseNewsSource(ABC):
             log.info("Locator search_bar_activator exists.")
         except AssertionError:
             raise ElementNotFound("Locator search_bar_activator could not be found.")
+        
+        self.dismiss_modal()
 
         try:
             self.browser.click_button_when_visible(self.locators['search_bar_activator'])
@@ -109,6 +115,8 @@ class BaseNewsSource(ABC):
         except AssertionError:
             raise ElementNotFound("Locator search_bar could not be found.")
         
+        self.dismiss_modal()
+
         try:
             self.browser.input_text_when_element_is_visible(self.locators['search_bar'],self.search_term)
             log.info("Search term inserted.")
@@ -143,25 +151,57 @@ class BaseNewsSource(ABC):
         
         if mode == "loading_element":
             try:
-                while True:
-                    self.browser.execute_javascript("window.scrollBy(0, 5000);")
-                    self.browser.wait_until_element_is_visible(self.locators['loading_element'],timeout=5)
-                    self.browser.wait_until_element_is_not_visible(self.locators['loading_element'],timeout=5)
+                total = 0
+                last_total = 0
+                while last_total != total:
+                    last_total = total
+                    self.browser.execute_javascript("window.scrollTo(0, document.body.scrollHeight);")
+                    all_news_items = self.browser.find_elements(self.locators['news_element'])
+                    last_item = all_news_items[-1]
+                    total = len(all_news_items)
+                    self.browser.wait_until_element_is_visible(last_item, timeout=10)
+                    self.browser.scroll_element_into_view(last_item)
             except Exception as e:
                 log.info(f"Finished scrolling with the following exception: {e} ")
-            
+
         else:
             raise NotImplementedError("Scroll mode not implemented.")
     
-    def capture_news(self):
+    def dismiss_modal(self):
+        if self.browser.does_page_contain_element(self.locators['modal_dismiss']):
+            self.browser.click_element_when_clickable(self.self.locators['modal_dismiss'],self.default_timeout)
+            log.info("Modal dismissed.")
+
+    def download_images(self):
         try:
-            # Captures all news elements
-            self.news_element_list = self.browser.find_elements(self.locators['news_element'])
-            print(len(self.news_element_list))
-        except ElementNotFound as e:
-            log.warn(f"No news container elements were found: {e}")
-        except Exception as e:
-            log.critical(f"The following exception was found when trying to capture the news list: {e}")
+            output_folder = os.path.join(os.curdir,f"output\{self.name}")
+            os.makedirs(output_folder,exist_ok=False)
+        except:
+            raise SystemError("Error creating images foder.")
+
+
+        for article in self.news_parsed_dict:
+            try:
+                url = article['picture_url']
+                image_response = urllib.request.urlopen(url)
+                content_type = image_response.headers.get('Content-Type')
+
+                file_extension = mimetypes.guess_extension(content_type)
+                if not file_extension:
+                    file_extension = '.jfif' 
+                
+                name = os.path.basename(article['title']) + file_extension
+                destination = os.path.join(output_folder,name)
+                print(f"url({url})")
+                print(f"name({name})")
+                print(f"destination({destination})")
+
+                with open(destination, 'wb') as f:
+                    f.write(image_response.read())
+
+            except:
+                log.critical(f"Error on downloading image for article {article['title']}")
+
     
     @abstractmethod
     def parse_results(self):

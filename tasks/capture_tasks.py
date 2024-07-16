@@ -1,11 +1,10 @@
-from pathlib import Path
+
 from robocorp.tasks import task
 from robocorp import log, workitems
 from sources.source_factory import get_news_source
-from RPA.Browser.Selenium import Selenium,ElementNotFound
 from . import setup_log
 from .util import check_connection,check_work_item
-import time
+
 
 @task
 def capture():

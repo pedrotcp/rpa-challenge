@@ -16,7 +16,7 @@ class GoogleNewsSource(BaseNewsSource):
             'category_container': '//a[@class="brSCsc" and text()="{category_placehoder}"]',
             'news_element': '//article[@class="IFHyqb DeXSAc"]',
             'loading_element':  '//*[@jsname="LbNpof" and @role="progressbar"]',
-            'title': '//a[@class="JtKRv"]',
+            'title': '//a[@class="JtKRv"]', 
             'description': None,
             'date': '//time[@class="hvbAAd"]',
             'picture_url': '//img[@class="Quavad vwBmvb"]',
@@ -45,13 +45,15 @@ class GoogleNewsSource(BaseNewsSource):
             raise ValueError("News list is empty.")
         
         for news_element in self.news_element_list:
-            print(news_element)
-            print(type(news_element))
             try:
-                title = self.browser.find_element(news_element,self.locators['title']).text if self.locators['title'] is not None else ''
-                description = self.browser.find_element(news_element,self.locators['description']).text if self.locators['description'] is not None else ''
-                date = self.browser.find_element(news_element,self.locators['date']).get_attribute('datetime') if self.locators['date'] is not None else ''
-                picture = self.browser.find_element(news_element,self.locators['picture_url']).get_attribute('srcset') if self.locators['picture_url'] is not None else ''
+                title = self.browser.find_element(self.locators['title'],news_element).get_attribute('text') #if self.locators['title'] is not None else ''
+                description = self.browser.get_element_attribute(self.browser.find_element(self.locators['title'],news_element),"text")
+                date = self.browser.find_element(self.locators['date'],news_element).get_attribute('datetime') if self.locators['date'] is not None else ''
+                picture = self.browser.find_element(self.locators['picture_url'],news_element).get_attribute('srcset') if self.locators['picture_url'] is not None else ''
+
+                print(f"title:{title}")
+                print(f"description:{description}")
+
 
                 self.news_parsed_dict.append({
                     "title":title,
@@ -59,12 +61,11 @@ class GoogleNewsSource(BaseNewsSource):
                     "date":date,
                     "picture_url":picture
                 })
-            
+                    
             except Exception as e:
                 log.warn(f"Error while parsing news element: {e}")
 
-        print(self.news_parsed_dict)
-
+            print(self.news_parsed_dict)
 
     def run(self):
         self.load_website()
@@ -73,7 +74,7 @@ class GoogleNewsSource(BaseNewsSource):
         self.filter_category()
         self.scroll(mode="loading_element")
         self.capture_news()
-        self.parse_results()
+        #self.parse_results()
 
         log.info("Waiting")
         #self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=5)

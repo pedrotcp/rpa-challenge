@@ -1,10 +1,10 @@
 [
   {
       "payload": {
-         "search_term": "candidato",
-         "category": "Local",
-         "months":"2",
-         "news_source": "google_news"
+         "search_term": "automation",
+         "category": "Business",
+         "months":"12",
+         "news_source": "la_times"
       }
   }
 ]

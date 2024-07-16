@@ -5,9 +5,6 @@ tasks:
   Output Excel:
     shell: python -m robocorp.tasks run tasks -t "excel"
 
-  Download Images:
-    shell: python -m robocorp.tasks run tasks -t "images"
-
 
 environmentConfigs:
   - environment_windows_amd64_freeze.yaml
