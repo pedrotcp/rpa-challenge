@@ -187,7 +187,7 @@ class BaseNewsSource(ABC):
                 name = os.path.basename(article['title']) + file_extension
                 destination = f"output/"+name
 
-                self.news_parsed_dict[article]['picture_filename'] = name
+                article['picture_filename'] = name
 
                 with open(destination, 'wb') as f:
                     f.write(image_response.read())
