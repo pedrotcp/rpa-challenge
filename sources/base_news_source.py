@@ -174,7 +174,7 @@ class BaseNewsSource(ABC):
 
     def download_images(self):
         try:
-            output_folder = os.path.join(os.curdir,f"output/{self.name}")
+            output_folder = f"output/{self.name}"
             os.makedirs(output_folder,exist_ok=False)
         except:
             raise SystemError("Error creating images foder.")
@@ -196,8 +196,10 @@ class BaseNewsSource(ABC):
                 with open(destination, 'wb') as f:
                     f.write(image_response.read())
 
-            except:
-                log.critical(f"Error on downloading image for article {article['title']}")
+            except Exception as e:
+                log.critical(f"Error on downloading image for article {article['title']}: {e}")
+
+            log.info("Images downloaded.")
 
     
     @abstractmethod
