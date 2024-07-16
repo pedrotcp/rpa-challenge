@@ -20,12 +20,3 @@ def capture():
         news_dict,term = news_source.run()
         workitems.outputs.create(payload={"news_dict":news_dict,"search_term":term})
 
-#Improvements
-#check max nr of months
-# keep execution of next work item in queue even if an error is thrown
-# check if month should be considered whole
-# fallbacks
-# Validate robot captcha
-# add generic errors to assertions
-# replace the use of aria label when locating spinner because of language
-# ask the user if they want the link to the news

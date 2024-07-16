@@ -14,46 +14,37 @@
        \ \_______\\ \__\ \__\\ \__\ \__\\ \_______\\ \_______\\ \_______\\ \__\\ \__\\ \_______\\ \_______\
         \|_______| \|__|\|__| \|__|\|__| \|_______| \|_______| \|_______| \|__| \|__| \|_______| \|_______|
 
-This is the public repository for the Python/RPA Challenge - Fresh News 2.0.
+This is the repository for a fictional automation company called Araujo Automation, created for the Fresh News 2.0 RPA Challenge
 
-This robot extracts news from a list of websites.
 
-## Demo
+This robot extracts news from a news website and writes it to an excel file.
 
-Insert gif or link to demo
+It is written in Python, and uses Robocorp's Python RPA framework.  
 
+The news source chosen for it was Los Angeles Times. However there is a base class called BaseNewsSource, which you can extend and use to implement other news sources more easily. 
 
 ## Installation
 
-Install by doing so and so
+To install this project, first install the Robocorp VSCode extension, login to your robocorp account, and optionally, set up the integration with Github so you always have the most recent version of your robot automatically deployed to your cloud.
 
 ```bash
   command -param1
   cd my-project
 ```
-    
 
 
 ## Documents
 
-The PDD (Process Definition Document) can be found inside the docs directory. It contains, among other things, a high level description of the process as is, a list of tools involved and a flow chart. 
+The PDD (Process Definition Document) can be found inside the docs directory. It contains, among other things, a high level description of the process as is, and to-be.
 
+The FAR (Financial Analysis Report) can also be found inside the same directory, and contains a brief description of the project costs and savings. 
 
-
-## ROI
-
-
-
-## FAQ
-
-#### Question 1
-
-Answer 1
-
-#### Question 2
-
-Answer 2
-
+## TO-DOs
+# Optimize the logic for the maximum number of months (check with the user) ;
+# Maintain execution of next Work Item in queue even if an error is thrown in the current one;
+# Check if the month parameter should be considered whole or partial i.e. "Last 2 months" should fall in any day of the 2nd month going back, or the first day of that month?    
+# Create fallback strategies, i.e., if robot cannot paginate via WebElements, maybe try via URL (if parameter is present)
+# Try to identify sources that implement captchas that prevent scraping and maybe use proxy/change webdriver (I.e. use Edge or Firefox)
 
 
 ## License
@@ -65,5 +56,6 @@ Answer 2
 ## Author
 
 - [@pedrotcp](https://www.github.com/pedrotcp)
+  [Linkedin](https://www.linkedin.com/in/pedroharaujo/)
 
 
