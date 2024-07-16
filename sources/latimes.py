@@ -103,7 +103,7 @@ class LosAngelesTimesSource(BaseNewsSource):
                 self.news_parsed_dict.append({
                     "title":title,
                     "description":description,
-                    "date": datetime.datetime.fromtimestamp(int(date)).strftime('%Y-%m-%d'),
+                    "date": datetime.fromtimestamp(int(date)).strftime('%Y-%m-%d'),
                     "picture_url":picture_url
                 })
             
