@@ -17,8 +17,8 @@ def capture():
     for item in workitems.inputs: 
         check_work_item(item)
         news_source = get_news_source(item.payload,headless=True)
-        news_dict = news_source.run()
-        workitems.outputs.create(payload={"news_dict":news_dict})
+        news_dict,term = news_source.run()
+        workitems.outputs.create(payload={"news_dict":news_dict,"search_term":term})
 
 #Improvements
 #check max nr of months

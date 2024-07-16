@@ -11,7 +11,9 @@ def excel():
     log.info("Excel task started.")
     item = workitems.inputs.current
     news_dict_body = item.payload['news_dict']
-
+    term = item.payload['search_term']
+    log.info(f"Term: {term}")
+    
     news_dict_header ={
         "title":"title",
         "description":"description",

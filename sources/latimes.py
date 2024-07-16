@@ -123,4 +123,4 @@ class LosAngelesTimesSource(BaseNewsSource):
         self.download_images()
         self.close()
 
-        return self.news_parsed_dict
+        return self.news_parsed_dict,self.search_term
