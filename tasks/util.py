@@ -15,7 +15,7 @@ def check_work_item(item):
         if key not in item.payload:
             raise ValueError(f"Input Work Item is missing key: '{key}'")
     
-    log.info("Work Item payloads checked.")
+    log.info(f"Work Item payload checked: {item} ")
 
 
 def check_connection():

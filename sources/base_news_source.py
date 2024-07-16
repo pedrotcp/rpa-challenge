@@ -173,12 +173,6 @@ class BaseNewsSource(ABC):
             log.info("Modal dismissed.")
 
     def download_images(self):
-        try:
-            output_folder = f"output/{self.name}"
-            os.makedirs(output_folder,exist_ok=False)
-        except:
-            raise SystemError("Error creating images foder.")
-
 
         for article in self.news_parsed_dict:
             try:
@@ -191,7 +185,7 @@ class BaseNewsSource(ABC):
                     file_extension = '.jfif' 
                 
                 name = os.path.basename(article['title']) + file_extension
-                destination = os.path.join(output_folder,name)
+                destination = f"output/"+name
 
                 with open(destination, 'wb') as f:
                     f.write(image_response.read())
@@ -208,4 +202,5 @@ class BaseNewsSource(ABC):
 
     def close(self):
         self.browser.close_browser()
+        log.info("End of iteration.")
 

@@ -120,6 +120,6 @@ class LosAngelesTimesSource(BaseNewsSource):
         self.sort_results()
         self.parse_results()
         self.download_images()
-
-        # self.browser.wait_until_page_contains_element('//*[@class="gb_rfvesdf"]', timeout=30)
         self.close()
+
+        return self.news_parsed_dict
