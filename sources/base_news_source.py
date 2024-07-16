@@ -193,7 +193,7 @@ class BaseNewsSource(ABC):
             except Exception as e:
                 log.critical(f"Error on downloading image for article {article['title']}: {e}")
 
-            log.info("Images downloaded.")
+        log.info("Images downloaded.")
 
     
     @abstractmethod
