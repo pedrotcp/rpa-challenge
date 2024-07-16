@@ -105,7 +105,7 @@ class LosAngelesTimesSource(BaseNewsSource):
                     "title":title,
                     "description":description,
                     "date": datetime.fromtimestamp(int(date)/1000).strftime('%Y-%m-%d'),
-                    "picture_url":picture_url
+                    "picture_url":picture_url,
                 })
             
             if done:
