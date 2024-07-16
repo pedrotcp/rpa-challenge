@@ -30,11 +30,8 @@ The news source chosen for it was Los Angeles Times. However there is a base cla
 
 To install this project, first install the Robocorp VSCode extension, login to your robocorp account, and optionally, set up the integration with Github so you always have the most recent version of your robot automatically deployed to your cloud.
 
-```bash
-  command -param1
-  cd my-project
-```
-## Customization
+
+## Add other news websites
 To add other news sources:
 - Copy and rename one of the source files inside the 'sources' directory
 - Rename the class
@@ -48,7 +45,7 @@ The PDD (Process Definition Document) can be found inside the docs directory. It
 
 The FAR (Financial Analysis Report) can also be found inside the same directory, and contains a brief description of the project costs and savings. 
 
-## TO-DOs
+## Sugested Improvements
 - Optimize the logic for the maximum number of months (check with the user) ;
 - Maintain execution of next Work Item in queue even if an error is thrown in the current one;
 - Check if the month parameter should be considered whole or partial i.e. "Last 2 months" should fall in any day of the 2nd month going back, or the first day of that month?    
