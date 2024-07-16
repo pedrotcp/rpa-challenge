@@ -13,10 +13,13 @@
       \ \  \____ \ \  \ \  \\ \  \ \  \\ \  \____ \ \  \____ \ \  \_|\ \\ \  \\ \  \\ \  \|\  \\ \  \_|\ \ 
        \ \_______\\ \__\ \__\\ \__\ \__\\ \_______\\ \_______\\ \_______\\ \__\\ \__\\ \_______\\ \_______\
         \|_______| \|__|\|__| \|__|\|__| \|_______| \|_______| \|_______| \|__| \|__| \|_______| \|_______|
-
+<hr>
 This is the repository for a fictional automation company called Araujo Automation, created for the Fresh News 2.0 RPA Challenge
 
-
+<p align="center">
+  <img src="https://github.com/pedrotcp/rpa-challenge/blob/main/docs/A2.png?raw=true" />
+</p>
+<hr>
 This robot extracts news from a news website and writes it to an excel file.
 
 It is written in Python, and uses Robocorp's Python RPA framework.  
