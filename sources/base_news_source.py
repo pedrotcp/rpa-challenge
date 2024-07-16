@@ -174,7 +174,7 @@ class BaseNewsSource(ABC):
 
     def download_images(self):
         try:
-            output_folder = os.path.join(os.curdir,f"output\{self.name}")
+            output_folder = os.path.join(os.curdir,f"output/{self.name}")
             os.makedirs(output_folder,exist_ok=False)
         except:
             raise SystemError("Error creating images foder.")
@@ -192,9 +192,6 @@ class BaseNewsSource(ABC):
                 
                 name = os.path.basename(article['title']) + file_extension
                 destination = os.path.join(output_folder,name)
-                print(f"url({url})")
-                print(f"name({name})")
-                print(f"destination({destination})")
 
                 with open(destination, 'wb') as f:
                     f.write(image_response.read())
