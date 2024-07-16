@@ -13,9 +13,8 @@ def excel():
     item = workitems.inputs.current
     news_dict_body = item.payload['news_dict']
     term = item.payload['search_term']
-    log.info(f"Term: {term}")
 
-    news_dict_header ={
+    news_dict_header = {
         "title":"title",
         "description":"description",
         "date": "date",
@@ -23,7 +22,12 @@ def excel():
         "picture_filename": "picture_filename"
     }
     # Add headers
-    news_dict = {**news_dict_header, **news_dict_body}
+
+    if isinstance(news_dict_body, list) and all(isinstance(d, dict) for d in news_dict_body):
+        news_dict = [news_dict_header] + news_dict_body
+    else:
+        log.error("news_dict_body is not a list of dictionaries.")
+        news_dict = [news_dict_header]
 
     for article in news_dict:
         if article['title'] == 'title':
