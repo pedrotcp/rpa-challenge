@@ -34,7 +34,13 @@ To install this project, first install the Robocorp VSCode extension, login to y
   command -param1
   cd my-project
 ```
-
+## Customization
+To add other news sources:
+- Copy and rename one of the source files inside the 'sources' directory
+- Rename the class
+- Import your new class into the Class facotry, located at 'sources/source_factory.py', and add it to the 'get_news_source()' method
+- Finally, change the locators inside the constructor of your new class, as well as the Name and base URL of your news source.
+- Test, test and test again!
 
 ## Documents
 
@@ -43,11 +49,11 @@ The PDD (Process Definition Document) can be found inside the docs directory. It
 The FAR (Financial Analysis Report) can also be found inside the same directory, and contains a brief description of the project costs and savings. 
 
 ## TO-DOs
-# Optimize the logic for the maximum number of months (check with the user) ;
-# Maintain execution of next Work Item in queue even if an error is thrown in the current one;
-# Check if the month parameter should be considered whole or partial i.e. "Last 2 months" should fall in any day of the 2nd month going back, or the first day of that month?    
-# Create fallback strategies, i.e., if robot cannot paginate via WebElements, maybe try via URL (if parameter is present)
-# Try to identify sources that implement captchas that prevent scraping and maybe use proxy/change webdriver (I.e. use Edge or Firefox)
+- Optimize the logic for the maximum number of months (check with the user) ;
+- Maintain execution of next Work Item in queue even if an error is thrown in the current one;
+- Check if the month parameter should be considered whole or partial i.e. "Last 2 months" should fall in any day of the 2nd month going back, or the first day of that month?    
+- Create fallback strategies, i.e., if robot cannot paginate via WebElements, maybe try via URL (if parameter is present)
+- Try to identify sources that implement captchas that prevent scraping and maybe use proxy/change webdriver (I.e. use Edge or Firefox)
 
 
 ## License
