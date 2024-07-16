@@ -10,7 +10,17 @@ def excel():
     
     log.info("Excel task started.")
     item = workitems.inputs.current
-    news_dict = item.payload['news_dict']
+    news_dict_body = item.payload['news_dict']
+
+    news_dict_header ={
+        "title":"title",
+        "description":"description",
+        "date": "date",
+        "url" : "url",
+        "picture_filename": "picture_filename"
+    }
+
+    news_dict = {**news_dict_header, **news_dict_body}
    
     lib = Files()
     lib.create_workbook(path="output/NewsList.xlsx", fmt="xlsx")

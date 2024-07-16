@@ -83,6 +83,7 @@ class LosAngelesTimesSource(BaseNewsSource):
             log.critical(f"The following exception was found when trying to capture the news list: {e}")
         log.info(f"Total results: {self.total_results}\n")
 
+
         done = False
         for page in range(1,math.ceil(self.total_results/10) + 1):
             for index in range(1,len(self.news_element_list) + 1):
