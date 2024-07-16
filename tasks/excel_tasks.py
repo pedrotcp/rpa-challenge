@@ -36,12 +36,18 @@ def excel():
         else:
             article['count'] = article['title'].count(term) + article['description'].count(term)
             article['contains_amount'] = count_terms(article['title'],article['description'])
+
+    
    
     lib = Files()
     lib.create_workbook(path="output/NewsList.xlsx", fmt="xlsx")
     lib.create_worksheet(name="News",content=news_dict)
     lib.save_workbook()
-
+    lib.delete_columns("D")
+    lib.save_workbook()
+    lib.delete_columns("G")
+    lib.save_workbook()
+    
 def count_terms(title,description):
     regex_money = re.compile(r'\$\d{1,3}(,\d{3})*(\.\d{2})?|(\d+(\.\d{1,2})?\s?(dollars|USD))', re.IGNORECASE)
 
