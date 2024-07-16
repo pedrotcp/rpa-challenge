@@ -6,13 +6,10 @@ from . import setup_log
 @task
 def excel():
     setup_log()
+    
     log.info("Excel task started.")
-    lib = Selenium()
-    lib.open_available_browser("https://apple.com")
-    for item in workitems.inputs:
-        log.info(item)
-        payload = {
-            "Name":"Name"
-        }
-        workitems.outputs.create(payload)
+    
+    item = workitems.inputs.current
+    news_dict = item.payload['news_dict']
+    log.info(news_dict)
 
